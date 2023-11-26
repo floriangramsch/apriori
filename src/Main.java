@@ -105,7 +105,7 @@ public class Main {
                 }
             }
         }
-//        result.
+        result.
         return result;
     }
     // n-1 + n-2 + n-3 + ... + n-n = sum_i=1^n ( n-x )
