@@ -71,7 +71,11 @@ public class Main {
                 count++;
             }
         }
-        System.out.println("Total count: " + count);
+//        System.out.print("Total count of (");
+//        for (int x : this_set) {
+//            System.out.print(x);
+//        }
+//        System.out.println("): " + count);
         return (float) count / data.length;
     }
 
@@ -79,12 +83,8 @@ public class Main {
         int len_a = a.length;
         int len_b = b.length;
         int[] result = new int[len_a+len_b];
-        for (int i=0; i<len_a; i++) {
-            result[i] = a[i];
-        }
-        for (int j=0; j<len_b; j++) {
-            result[len_a+j] = b[j];
-        }
+        System.arraycopy(a, 0, result, 0, len_a);
+        System.arraycopy(b, 0, result, len_a, len_b);
         return result;
     }
     public static int[][] generate(int[][] candidates) {
@@ -110,12 +110,30 @@ public class Main {
         result = Arrays.copyOf(result, counter);
         return result;
     }
-    // n-1 + n-2 + n-3 + ... + n-n = sum_i=1^n ( n-x )
-    // = n(n-1)/2
-    // (0, 1, 2, 3)
-    // (01, 02, 03, 12, 13, 23)
-    // (012, 013, 023, 123)
-    // (0123)
+
+    public static int[][] prune(int[][] data, int[][] to_prune, double k) {
+        int[][] pruned = new int[to_prune.length][];
+        int counter = 0;
+        for (int[] can : to_prune) {
+//            for (int x : can) {
+//                System.out.print(x);
+//            }
+            if (support(data, can) >= k) {
+                pruned[counter] = can;
+                counter++;
+            }
+        }
+        pruned = Arrays.copyOf(pruned, counter);
+        return pruned;
+    }
+
+
+//    public static int[][] apriori(int[][] data) {
+//        int[][] result = new int[10][];
+//
+//
+//        return result;
+//    }
 
     public static void main(String[] args) {
         int[][] data1 = read_file("src/dm1.csv");
@@ -127,10 +145,12 @@ public class Main {
         };
 //        float support = support(data1, new int[] {0, 2, 3});
 //        System.out.println("Support: " + support);
-        int[][] to_gen = new int[][]{{0}, {1}, {2}, {3}};
-        int[][] cands = generate(to_gen);
+        int[][] cands = new int[][]{{0}, {1}, {2}};
         cands = generate(cands);
-        cands = generate(cands);
-        print_array(cands);
+        int[][] pruning = prune(test, cands, 0.3);
+//        int[][] to_gen = new int[][]{{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}};
+//        int[][] cands = generate(to_gen);
+//        cands = generate(cands);
+        print_array(pruning);
     }
 }
