@@ -1,3 +1,5 @@
+package src;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -105,7 +107,7 @@ public class Main {
                 }
             }
         }
-//        result.
+        result = Arrays.copyOf(result, counter);
         return result;
     }
     // n-1 + n-2 + n-3 + ... + n-n = sum_i=1^n ( n-x )
@@ -123,15 +125,11 @@ public class Main {
                 {1, 1, 0},
                 {1, 0, 0}
         };
-//        for (int[] x : test) {
-//            for (int y : x) {
-//                System.out.print(y);
-//            }
-//        }
 //        float support = support(data1, new int[] {0, 2, 3});
 //        System.out.println("Support: " + support);
         int[][] to_gen = new int[][]{{0}, {1}, {2}, {3}};
         int[][] cands = generate(to_gen);
+        cands = generate(cands);
         cands = generate(cands);
         print_array(cands);
     }
