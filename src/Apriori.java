@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static src.Main.print_array;
@@ -75,6 +76,23 @@ public class Apriori {
         return pruned;
     }
 
+    public List<List<Integer>> maximize(List<List<Integer>> set) {
+        List<List<Integer>> maximized = new ArrayList<>(set);
+        for (int i=0; i<set.size(); i++) {
+            boolean is_drin = false;
+            for (int j=i+1; j<set.size(); j++){
+                if (new HashSet<>(set.get(j)).containsAll(set.get(i))) {
+//                    is_drin = true;
+                    maximized.remove(set.get(j));
+                }
+            }
+//            if (!is_drin) {
+//                maximized.add(set.get(i));
+//            }
+        }
+        return maximized;
+    }
+
     public void run(double k) {
         this.frequent_set = new ArrayList<>();
         this.negative_border = new ArrayList<>();
@@ -92,6 +110,9 @@ public class Apriori {
             c = this.generate(c);
             c = this.prune(c, k);
         }
+        print_array(this.negative_border);
+        this.negative_border = this.maximize(this.negative_border);
+        print_array(this.negative_border);
     }
 
     public List<List<Integer>> getf() {
@@ -105,7 +126,7 @@ public class Apriori {
         for (float i = start; i <= end; i=i+step) {
             this.run(i);
             System.out.println("k: " + i);
-            System.out.println("Frequent Set: ");
+            System.out.println("Data Set: ");
             print_array(this.data);
             System.out.println("Frequent Set: ");
             print_array(this.getf());
@@ -129,12 +150,15 @@ public class Apriori {
         }
         for (List<List<Integer>> x : patterns) {
             for (List<Integer> y : x) {
-                System.out.print("( ");
-                for (int z : y) {
-                    System.out.print(z);
+                float rounded_support = Math.round(this.support(new ArrayList<>(y)) * 100.0) / 100.0f;
+                if (rounded_support >= 0.4) {
+                    System.out.print("( ");
+                    for (int z : y) {
+                        System.out.print(z);
+                    }
+                    System.out.print(": " + rounded_support);
+                    System.out.print(" )");
                 }
-                System.out.print(": " + this.support(new ArrayList<>(y)));
-                System.out.print(" )");
             }
             System.out.println();
         }
@@ -145,3 +169,5 @@ public class Apriori {
 // 01 02 03 12 13 23
 //   012 013 123
 //      0123
+
+// 23 28 38

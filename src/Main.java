@@ -62,13 +62,21 @@ public class Main {
         List<List<Integer>> data1 = read_file("src/dm1.csv");
         List<List<Integer>> data2 = read_file("src/dm2.csv");
         List<List<Integer>> test = new ArrayList<>() {{
-            add(new ArrayList<>() {{ add(1); add(1); add(0); add(0);}});
-            add(new ArrayList<>() {{ add(1); add(1); add(0); add(1);}});
-            add(new ArrayList<>() {{ add(1); add(0); add(0); add(0);}});
+            add(new ArrayList<>() {{ add(1); add(1); add(0);}});
+            add(new ArrayList<>() {{ add(1); add(1); add(1);}});
+            add(new ArrayList<>() {{ add(1); add(0); add(1);}});
         }};
+        //  0 1 2
+        // 01+ 02+ 12-
+        //   012-
 
-        Apriori apriored = new Apriori(test);
+        Apriori apriored = new Apriori(data1);
         apriored.show(0.4f, 0.4f, 0.1f);
         apriored.tree();
+//        List<List<Integer>> to_maximize = new ArrayList<>() {{
+//            add(new ArrayList<>() {{ add(1); add(2);}});
+//            add(new ArrayList<>() {{ add(0); add(1); add(2);}});
+//        }};
+//        System.out.println(apriored.maximize(to_maximize));
     }
 }
