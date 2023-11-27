@@ -11,8 +11,20 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.util.stream.Stream;
 import java.util.List;
+import javax.swing.*;
+import java.awt.*;
 
-public class Main {
+public class Main extends JPanel{
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        int width = getWidth();
+        int height = getHeight();
+
+        // Kreis zeichnen
+        g.setColor(Color.BLUE);
+        g.fillOval(width / 2 - 50, height / 2 - 50, 100, 100);
+    }
     public static List<List<Integer>> read_file(String path) {
         List<List<Integer>> data = new ArrayList<>();
         try {
@@ -70,13 +82,26 @@ public class Main {
         // 01+ 02+ 12-
         //   012-
 
-        Apriori apriored = new Apriori(data1);
-        apriored.show(0.4f, 0.4f, 0.1f);
-        apriored.tree();
+//        Apriori apriored = new Apriori(data1);
+//        apriored.show(0.4f, 0.4f, 0.1f);
+//        apriored.tree();
+
 //        List<List<Integer>> to_maximize = new ArrayList<>() {{
 //            add(new ArrayList<>() {{ add(1); add(2);}});
 //            add(new ArrayList<>() {{ add(0); add(1); add(2);}});
 //        }};
 //        System.out.println(apriored.maximize(to_maximize));
+
+        JFrame f=new JFrame();//creating instance of JFrame
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(300, 300);
+
+        Main circlePanel = new Main();
+        f.add(circlePanel);
+        f.add(circlePanel);
+
+        f.setVisible(true);
+
     }
 }
+
