@@ -110,9 +110,7 @@ public class Apriori {
             c = this.generate(c);
             c = this.prune(c, k);
         }
-        print_array(this.negative_border);
         this.negative_border = this.maximize(this.negative_border);
-        print_array(this.negative_border);
     }
 
     public List<List<Integer>> getf() {
@@ -135,7 +133,7 @@ public class Apriori {
         }
     }
 
-    public void tree() {
+    public List<List<Node>> tree(int width, int height) {
         List<List<List<Integer>>> patterns = new ArrayList<>();
         List<List<Integer>> c = new ArrayList<>();
         for (int i = 0; i < this.data.get(0).size(); i++) {
@@ -148,20 +146,31 @@ public class Apriori {
             patterns.add(c);
             c = generate(c);
         }
+
+        float i = 0;
+        float j;
+        int size = 30;
+        List<List<Node>> coords = new ArrayList<>();
         for (List<List<Integer>> x : patterns) {
+            j = (float) width /2 - (((float) x.size() /2) * size) - 200;
+            List<Node> ebene = new ArrayList<>();
             for (List<Integer> y : x) {
                 float rounded_support = Math.round(this.support(new ArrayList<>(y)) * 100.0) / 100.0f;
-                if (rounded_support >= 0.4) {
-                    System.out.print("( ");
-                    for (int z : y) {
-                        System.out.print(z);
-                    }
-                    System.out.print(": " + rounded_support);
-                    System.out.print(" )");
+                StringBuilder value = new StringBuilder();
+                for (int z : y) {
+                    value.append(z);
                 }
+                float finalI = i;
+                float finalJ = j;
+                System.out.println(rounded_support);
+                Node node = new Node(new ArrayList<>(){{add(finalJ); add(finalI);}}, rounded_support, value, size);
+                ebene.add(node);
+                j = j+size;
             }
-            System.out.println();
+            i = i+2*size;
+            coords.add(ebene);
         }
+        return coords;
     }
 }
 //      {}

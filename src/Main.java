@@ -1,5 +1,6 @@
 package src;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,20 +12,9 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.util.stream.Stream;
 import java.util.List;
-import javax.swing.*;
-import java.awt.*;
 
-public class Main extends JPanel{
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        int width = getWidth();
-        int height = getHeight();
+public class Main{
 
-        // Kreis zeichnen
-        g.setColor(Color.BLUE);
-        g.fillOval(width / 2 - 50, height / 2 - 50, 100, 100);
-    }
     public static List<List<Integer>> read_file(String path) {
         List<List<Integer>> data = new ArrayList<>();
         try {
@@ -73,6 +63,7 @@ public class Main extends JPanel{
     public static void main(String[] args) {
         List<List<Integer>> data1 = read_file("src/dm1.csv");
         List<List<Integer>> data2 = read_file("src/dm2.csv");
+        List<List<Integer>> test2 = read_file("src/test.csv");
         List<List<Integer>> test = new ArrayList<>() {{
             add(new ArrayList<>() {{ add(1); add(1); add(0);}});
             add(new ArrayList<>() {{ add(1); add(1); add(1);}});
@@ -82,7 +73,8 @@ public class Main extends JPanel{
         // 01+ 02+ 12-
         //   012-
 
-//        Apriori apriored = new Apriori(data1);
+        Apriori apriored = new Apriori(test2);
+        apriored.run(0.4);
 //        apriored.show(0.4f, 0.4f, 0.1f);
 //        apriored.tree();
 
@@ -92,13 +84,31 @@ public class Main extends JPanel{
 //        }};
 //        System.out.println(apriored.maximize(to_maximize));
 
-        JFrame f=new JFrame();//creating instance of JFrame
+        JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(300, 300);
+        int width = 1800;
+        int height = 500;
+        f.setSize(width, height);
 
-        Main circlePanel = new Main();
-        f.add(circlePanel);
-        f.add(circlePanel);
+//        List<Integer> coord1 = new ArrayList<>();
+//        List<Integer> coord2 = new ArrayList<>();
+//        coord1.add(0);
+//        coord1.add(0);
+//        coord2.add(30);
+//        coord2.add(30);
+//
+//        List<List<Integer>> ebene1 = new ArrayList<>();
+//        List<List<Integer>> ebene2 = new ArrayList<>();
+//        ebene1.add(coord1);
+//        ebene2.add(coord2);
+//
+//        List<List<List<Integer>>> coords = new ArrayList<>();
+//        coords.add(ebene1);
+//        coords.add(ebene2);
+
+        List<List<Node>> coords = apriored.tree(width, height);
+        Tree panel = new Tree(coords);
+        f.add(panel);
 
         f.setVisible(true);
 
