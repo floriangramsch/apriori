@@ -74,6 +74,7 @@ public class Main{
         //   012-
 
         Apriori apriored = new Apriori(test2);
+        System.out.println(apriored.support( new ArrayList<>() {{add(0); add(1); add(2);}}));
         apriored.run(0.4);
 //        apriored.show(0.4f, 0.4f, 0.1f);
 //        apriored.tree();

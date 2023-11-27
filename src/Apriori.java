@@ -162,7 +162,7 @@ public class Apriori {
                 }
                 float finalI = i;
                 float finalJ = j;
-                System.out.println(rounded_support);
+//                System.out.println(rounded_support);
                 Node node = new Node(new ArrayList<>(){{add(finalJ); add(finalI);}}, rounded_support, value, size);
                 ebene.add(node);
                 j = j+size;
