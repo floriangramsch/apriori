@@ -12,11 +12,14 @@ public class Apriori {
     private List<List<Integer>> positive_border;
     private List<List<Integer>> negative_border;
     private List<List<Integer>> frequent_set;
+    private List<List<Integer>> infrequent_set;
+
     public Apriori(List<List<Integer>> data) {
         this.data = data;
         this.positive_border = new ArrayList<>();
         this.negative_border = new ArrayList<>();
         this.frequent_set = new ArrayList<>();
+        this.infrequent_set = new ArrayList<>();
     }
 
     public float support(List<Integer> this_set) {
@@ -44,9 +47,9 @@ public class Apriori {
         int num = candidates.get(0).size();
         List<List<Integer>> result = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            for (int j = i+1; j < n; j++){
-                int a = candidates.get(i).get(num-1);
-                int b = candidates.get(j).get(num-1);
+            for (int j = i + 1; j < n; j++) {
+                int a = candidates.get(i).get(num - 1);
+                int b = candidates.get(j).get(num - 1);
                 List<Integer> base_a = new ArrayList<>(candidates.get(i).subList(0, candidates.get(i).size() - 1));
                 List<Integer> base_b = new ArrayList<>(candidates.get(j).subList(0, candidates.get(j).size() - 1));
                 ;
@@ -69,8 +72,8 @@ public class Apriori {
 //            }
             if (this.support(can) >= k) {
                 pruned.add(can);
-            }
-            else {
+            } else {
+                this.infrequent_set.add(can);
                 this.negative_border.add(can);
             }
         }
@@ -79,9 +82,9 @@ public class Apriori {
 
     public List<List<Integer>> maximize(List<List<Integer>> set) {
         List<List<Integer>> maximized = new ArrayList<>(set);
-        for (int i=0; i<set.size(); i++) {
+        for (int i = 0; i < set.size(); i++) {
             boolean is_drin = false;
-            for (int j=i+1; j<set.size(); j++){
+            for (int j = i + 1; j < set.size(); j++) {
                 if (new HashSet<>(set.get(j)).containsAll(set.get(i))) {
 //                    is_drin = true;
                     maximized.remove(set.get(j));
@@ -94,15 +97,16 @@ public class Apriori {
         return maximized;
     }
 
-//    private boolean is_subset()
+    //    private boolean is_subset()
     public void run(double k) {
         this.frequent_set = new ArrayList<>();
+        this.infrequent_set = new ArrayList<>();
         this.negative_border = new ArrayList<>();
         this.positive_border = new ArrayList<>();
         List<List<Integer>> c = new ArrayList<>();
-        for (int i=0; i<this.data.get(0).size(); i++) {
+        for (int i = 0; i < this.data.get(0).size(); i++) {
             int finalI = i;
-            c.add(new ArrayList<>(){{
+            c.add(new ArrayList<>() {{
                 add(finalI);
             }});
         }
@@ -130,15 +134,17 @@ public class Apriori {
     public List<List<Integer>> getf() {
         return this.frequent_set;
     }
+
     public List<List<Integer>> getNegative_border() {
         return this.negative_border;
     }
+
     public List<List<Integer>> getPositive_border() {
         return this.positive_border;
     }
 
     public void show(double start, double end, double step) {
-        for (double i = start; i <= end; i=i+step) {
+        for (double i = start; i <= end; i = i + step) {
             this.run(i);
             System.out.println("k: " + i);
             System.out.println("Data Set: ");
@@ -170,7 +176,7 @@ public class Apriori {
         float j;
         List<List<Node>> coords = new ArrayList<>();
         for (List<List<Integer>> x : patterns) {
-            j = (float) width /2 - (((float) x.size() /2) * size) - 200;
+            j = (float) width / 2 - (((float) x.size() / 2) * size) - 200;
             List<Node> ebene = new ArrayList<>();
             for (List<Integer> y : x) {
                 float rounded_support = Math.round(this.support(new ArrayList<>(y)) * 100.0) / 100.0f;
@@ -180,7 +186,10 @@ public class Apriori {
                 }
                 float finalI = i;
                 float finalJ = j;
-                Node node = new Node(new ArrayList<>(){{add(finalJ); add(finalI);}}, rounded_support, value, size);
+                Node node = new Node(new ArrayList<>() {{
+                    add(finalJ);
+                    add(finalI);
+                }}, rounded_support, value, size);
                 // negative border
                 boolean containsTarget = false;
                 for (List<Integer> innerList : this.negative_border) {
@@ -189,24 +198,24 @@ public class Apriori {
                         break;
                     }
                 }
-                if (containsTarget){
+                if (containsTarget) {
                     node.set_negative();
                 }
                 // positive border
-                 containsTarget = false;
+                containsTarget = false;
                 for (List<Integer> innerList : this.positive_border) {
                     if (innerList.equals(y)) {
                         containsTarget = true;
                         break;
                     }
                 }
-                if (containsTarget){
+                if (containsTarget) {
                     node.set_positive();
                 }
                 ebene.add(node);
-                j = j+size;
+                j = j + size;
             }
-            i = i+2*size;
+            i = i + 2 * size;
             coords.add(ebene);
         }
         return coords;
@@ -225,4 +234,12 @@ public class Apriori {
 
         f.setVisible(true);
     }
+
+    public List<List<Integer>> getFrequent_set() {
+        return this.frequent_set;
+    }
+    public List<List<Integer>> getInfrequent_set() {
+        return this.infrequent_set;
+    }
+
 }

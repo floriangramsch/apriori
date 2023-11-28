@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Main{
-
     public static List<List<Integer>> read_file(String path) {
         List<List<Integer>> data = new ArrayList<>();
         try {
@@ -43,16 +42,25 @@ public class Main{
         System.out.println("]");
     }
 
-
-    public static int[] concat_int(int[] a, int[] b ) {
-        int len_a = a.length;
-        int len_b = b.length;
-        int[] result = new int[len_a+len_b];
-        System.arraycopy(a, 0, result, 0, len_a);
-        System.arraycopy(b, 0, result, len_a, len_b);
+    public static List<List<Integer>> intersect(List<List<Integer>> sub1, List<List<Integer>> sub2) {
+        List<List<Integer>> result = new ArrayList<>();
+        for (List<Integer> outerList1 : sub1) {
+            if (sub2.contains(outerList1) && !result.contains(outerList1)) {
+                result.add(outerList1);
+            }
+        }
         return result;
     }
 
+    public static List<List<Integer>> constraint(List<List<Integer>> data1, List<List<Integer>> data2, float k1, boolean k1_greater, float k2, boolean k2_greater) {
+        Apriori that = new Apriori(data1);
+        Apriori other = new Apriori(data2);
+        that.run(k1);
+        other.run(k2);
+        List<List<Integer>> sub1 = k1_greater ? that.getFrequent_set() : that.getInfrequent_set();
+        List<List<Integer>> sub2 = k2_greater ? other.getFrequent_set() : other.getInfrequent_set();
+        return intersect(sub1, sub2);
+    }
 
     public static void main(String[] args) {
         List<List<Integer>> data1 = read_file("src/dm1.csv");
@@ -70,20 +78,15 @@ public class Main{
             }
             random.add(tmp_row);
         }
-        for (List<Integer> ebene : random) {
-            System.out.println(ebene);
-        }
 
-
-
-        Apriori apriored = new Apriori(random);
+        Apriori apriored = new Apriori(data1);
         double k = 0.1;
         apriored.run(k);
-        apriored.draw(k);
+//        apriored.draw(k);
 //        apriored.show(k, k, 0.1);
 
-
-
+        List<List<Integer>> con = constraint(data1, data2, 0.3f, true, 0.5f, false);
+        System.out.println(con);
     }
 }
 
