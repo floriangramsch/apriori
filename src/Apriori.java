@@ -1,5 +1,6 @@
 package src;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -93,6 +94,7 @@ public class Apriori {
         return maximized;
     }
 
+//    private boolean is_subset()
     public void run(double k) {
         this.frequent_set = new ArrayList<>();
         this.negative_border = new ArrayList<>();
@@ -111,17 +113,32 @@ public class Apriori {
             c = this.prune(c, k);
         }
         this.negative_border = this.maximize(this.negative_border);
+        for (List<Integer> cand1 : this.frequent_set) {
+            boolean is_positive = true;
+            for (List<Integer> cand2 : this.frequent_set) {
+                if (new HashSet<>(cand2).containsAll(cand1) && !cand1.equals(cand2)) {
+                    is_positive = false;
+                    break;
+                }
+            }
+            if (is_positive) {
+                this.positive_border.add(cand1);
+            }
+        }
     }
 
     public List<List<Integer>> getf() {
         return this.frequent_set;
     }
-    public List<List<Integer>> getNegative() {
+    public List<List<Integer>> getNegative_border() {
         return this.negative_border;
     }
+    public List<List<Integer>> getPositive_border() {
+        return this.positive_border;
+    }
 
-    public void show(float start, float end, float step) {
-        for (float i = start; i <= end; i=i+step) {
+    public void show(double start, double end, double step) {
+        for (double i = start; i <= end; i=i+step) {
             this.run(i);
             System.out.println("k: " + i);
             System.out.println("Data Set: ");
@@ -129,11 +146,13 @@ public class Apriori {
             System.out.println("Frequent Set: ");
             print_array(this.getf());
             System.out.println("Negative Border: ");
-            print_array(this.getNegative());
+            print_array(this.getNegative_border());
+            System.out.println("Positive Border: ");
+            print_array(this.getPositive_border());
         }
     }
 
-    public List<List<Node>> tree(int width, int height) {
+    public List<List<Node>> tree(int width, int height, int size) {
         List<List<List<Integer>>> patterns = new ArrayList<>();
         List<List<Integer>> c = new ArrayList<>();
         for (int i = 0; i < this.data.get(0).size(); i++) {
@@ -149,7 +168,6 @@ public class Apriori {
 
         float i = 0;
         float j;
-        int size = 30;
         List<List<Node>> coords = new ArrayList<>();
         for (List<List<Integer>> x : patterns) {
             j = (float) width /2 - (((float) x.size() /2) * size) - 200;
@@ -162,8 +180,29 @@ public class Apriori {
                 }
                 float finalI = i;
                 float finalJ = j;
-//                System.out.println(rounded_support);
                 Node node = new Node(new ArrayList<>(){{add(finalJ); add(finalI);}}, rounded_support, value, size);
+                // negative border
+                boolean containsTarget = false;
+                for (List<Integer> innerList : this.negative_border) {
+                    if (innerList.equals(y)) {
+                        containsTarget = true;
+                        break;
+                    }
+                }
+                if (containsTarget){
+                    node.set_negative();
+                }
+                // positive border
+                 containsTarget = false;
+                for (List<Integer> innerList : this.positive_border) {
+                    if (innerList.equals(y)) {
+                        containsTarget = true;
+                        break;
+                    }
+                }
+                if (containsTarget){
+                    node.set_positive();
+                }
                 ebene.add(node);
                 j = j+size;
             }
@@ -172,11 +211,18 @@ public class Apriori {
         }
         return coords;
     }
-}
-//      {}
-//   0  1  2  3
-// 01 02 03 12 13 23
-//   012 013 123
-//      0123
 
-// 23 28 38
+    public void draw(double k) {
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int width = 1800;
+        int height = 500;
+        f.setSize(width, height);
+
+        List<List<Node>> coords = this.tree(width, height, 30);
+        Tree panel = new Tree(coords, k);
+        f.add(panel);
+
+        f.setVisible(true);
+    }
+}

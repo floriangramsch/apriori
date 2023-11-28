@@ -1,17 +1,11 @@
 package src;
 
-import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
-import java.util.stream.Stream;
 import java.util.List;
+import java.util.Random;
 
 public class Main{
 
@@ -63,55 +57,32 @@ public class Main{
     public static void main(String[] args) {
         List<List<Integer>> data1 = read_file("src/dm1.csv");
         List<List<Integer>> data2 = read_file("src/dm2.csv");
-        List<List<Integer>> test2 = read_file("src/test.csv");
-        List<List<Integer>> test = new ArrayList<>() {{
-            add(new ArrayList<>() {{ add(1); add(1); add(0);}});
-            add(new ArrayList<>() {{ add(1); add(1); add(1);}});
-            add(new ArrayList<>() {{ add(1); add(0); add(1);}});
-        }};
-        //  0 1 2
-        // 01+ 02+ 12-
-        //   012-
+        List<List<Integer>> test = read_file("src/test.csv");
+        List<List<Integer>> vier = read_file("src/drei.csv");
 
-        Apriori apriored = new Apriori(test2);
-        System.out.println(apriored.support( new ArrayList<>() {{add(0); add(1); add(2);}}));
-        apriored.run(0.4);
-//        apriored.show(0.4f, 0.4f, 0.1f);
-//        apriored.tree();
+        int n = 7;
+        List<List<Integer>> random = new ArrayList<>(n);
+        Random random_generator = new Random();
+        for (int row = 0 ; row < 10; row++) {
+            List<Integer> tmp_row = new ArrayList<>();
+            for (int i=0; i<5; i++) {
+                tmp_row.add(random_generator.nextInt(2));
+            }
+            random.add(tmp_row);
+        }
+        for (List<Integer> ebene : random) {
+            System.out.println(ebene);
+        }
 
-//        List<List<Integer>> to_maximize = new ArrayList<>() {{
-//            add(new ArrayList<>() {{ add(1); add(2);}});
-//            add(new ArrayList<>() {{ add(0); add(1); add(2);}});
-//        }};
-//        System.out.println(apriored.maximize(to_maximize));
 
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int width = 1800;
-        int height = 500;
-        f.setSize(width, height);
 
-//        List<Integer> coord1 = new ArrayList<>();
-//        List<Integer> coord2 = new ArrayList<>();
-//        coord1.add(0);
-//        coord1.add(0);
-//        coord2.add(30);
-//        coord2.add(30);
-//
-//        List<List<Integer>> ebene1 = new ArrayList<>();
-//        List<List<Integer>> ebene2 = new ArrayList<>();
-//        ebene1.add(coord1);
-//        ebene2.add(coord2);
-//
-//        List<List<List<Integer>>> coords = new ArrayList<>();
-//        coords.add(ebene1);
-//        coords.add(ebene2);
+        Apriori apriored = new Apriori(random);
+        double k = 0.1;
+        apriored.run(k);
+        apriored.draw(k);
+//        apriored.show(k, k, 0.1);
 
-        List<List<Node>> coords = apriored.tree(width, height);
-        Tree panel = new Tree(coords);
-        f.add(panel);
 
-        f.setVisible(true);
 
     }
 }

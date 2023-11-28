@@ -1,19 +1,18 @@
 package src;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tree extends JPanel {
     private final List<List<Node>> coords;
+    private final double k;
 
-    public Tree(List<List<Node>> coords) {
+    public Tree(List<List<Node>> coords, double k) {
         this.coords = coords;
+        this.k = k;
     }
 
-//    public void add_Coord(List<Integer> coord) {
-//        this.coords.add(coord);
-//    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -26,10 +25,15 @@ public class Tree extends JPanel {
                 int size = (int) node.get_size(); // Durchmesser des Kreises
                 float supp = node.get_supp();
                 g.setFont(new Font("Arial", Font.PLAIN, size/3));
-                if (supp >= 0.4) {
-                    g.setColor(Color.RED); // Farbe des Kreises
+                if (supp >= this.k) {
+                    g.setColor(new Color(1, 170, 42)); // Farbe des Kreises
                 } else {
                     g.setColor(Color.BLACK); // Farbe des Kreises
+                }
+                if (node.negative) {
+                    g.setColor(Color.BLUE); // Farbe des Kreises
+                } else if (node.positive) {
+                    g.setColor(Color.RED);
                 }
 
                 g.drawOval(x, y, size, size); // Kreis zeichnen
